@@ -518,8 +518,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     var sections = iss.sections || [];
     sections.forEach(function (s) { desks.appendChild(jump(s.title, "desk-" + s.key)); });
     desks.appendChild(jump("Past issues", "past"));
-    var allBtn = el("button", { type: "button", class: "all", id: "toggle-all" });
-    desks.appendChild(allBtn);
 
     root.appendChild(el("h1", { class: "sr-only", text: "Week of " + iss.weekOf }));
 
@@ -547,7 +545,7 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
       });
       deskBody.appendChild(ul);
       root.appendChild(sec);
-      setOpen(sec, collapsed.indexOf(s.key) === -1, false);
+      setOpen(sec, s.key === "ux", false);
     });
     syncAll();
 
@@ -558,21 +556,12 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     }
   }
 
-  var collapsed = [];
-  try { var c = JSON.parse(localStorage.getItem("briefing-collapsed") || "[]"); if (Array.isArray(c)) collapsed = c.filter(function (x) { return typeof x === "string"; }); } catch (e) {}
-  function saveCollapsed() { try { localStorage.setItem("briefing-collapsed", JSON.stringify(collapsed)); } catch (e) {} }
   function isOpen(sec) { var b = sec.querySelector(".desk-toggle"); return !b || b.getAttribute("aria-expanded") === "true"; }
   function setOpen(sec, open, remember) {
     var b = sec.querySelector(".desk-toggle");
     var body = document.getElementById(b.getAttribute("aria-controls"));
     b.setAttribute("aria-expanded", open ? "true" : "false");
     if (body) body.hidden = !open;
-    if (remember) {
-      var k = sec.getAttribute("data-key"), i = collapsed.indexOf(k);
-      if (open && i !== -1) collapsed.splice(i, 1);
-      if (!open && i === -1) collapsed.push(k);
-      saveCollapsed();
-    }
   }
   function syncAll() {
     var b = document.getElementById("toggle-all");
@@ -593,13 +582,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     if (tog) {
       var sec = tog.closest("section.desk");
       setOpen(sec, tog.getAttribute("aria-expanded") !== "true", true);
-      syncAll();
-      return;
-    }
-    if (e.target.closest && e.target.closest("#toggle-all")) {
-      var desksEls = document.querySelectorAll("section.desk");
-      var anyOpen = Array.prototype.some.call(desksEls, function (d) { return isOpen(d); });
-      Array.prototype.forEach.call(desksEls, function (d) { setOpen(d, !anyOpen, true); });
       syncAll();
       return;
     }
