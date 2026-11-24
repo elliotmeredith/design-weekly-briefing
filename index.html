@@ -517,7 +517,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     strap.textContent = "Week of " + iss.weekOf + " · covers " + iss.range;
     var sections = iss.sections || [];
     sections.forEach(function (s) { desks.appendChild(jump(s.title, "desk-" + s.key)); });
-    if (iss.worth && iss.worth.length) desks.appendChild(jump("Worth your time", "back"));
     desks.appendChild(jump("Past issues", "past"));
     var allBtn = el("button", { type: "button", class: "all", id: "toggle-all" });
     desks.appendChild(allBtn);
@@ -551,19 +550,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
       setOpen(sec, collapsed.indexOf(s.key) === -1, false);
     });
     syncAll();
-
-    var back = el("div", { class: "back", id: "back" });
-    if (iss.worth && iss.worth.length) {
-      var ul2 = el("ul", { class: "reads" });
-      iss.worth.forEach(function (w) {
-        ul2.appendChild(el("li", null, [link(w.title, w.url), w.source ? el("span", { class: "by", text: w.source }) : null, el("p", { text: w.why })]));
-      });
-      back.appendChild(el("section", null, [el("h2", { text: "Worth your time" }), ul2]));
-    }
-    if (iss.tryThis) {
-      back.appendChild(el("section", { class: "try" }, [el("h2", { text: "Try this week" }), el("h3", { text: iss.tryThis.lead }), el("p", { text: iss.tryThis.body })]));
-    }
-    root.appendChild(back);
 
     if (iss.sources && iss.sources.length) {
       var ol = el("ol");
