@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en-GB" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,12 +17,6 @@
   --tint: #f3f3f3;
   --serif: "Newsreader", Georgia, "Times New Roman", serif;
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121212; --fg: #ececec; --muted: #a0a0a0; --line: #343434; --rule: #ececec; --tint: #1c1c1c;
-    color-scheme: dark;
-  }
 }
 :root[data-theme="dark"] {
   --bg: #121212; --fg: #ececec; --muted: #a0a0a0; --line: #343434; --rule: #ececec; --tint: #1c1c1c;
@@ -653,7 +647,9 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     toggle.setAttribute("aria-pressed", dark ? "true" : "false");
     toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
-  try { var saved = localStorage.getItem("briefing-theme"); if (saved === "dark" || saved === "light") docEl.setAttribute("data-theme", saved); } catch (e) {}
+  var saved = null;
+  try { saved = localStorage.getItem("briefing-theme"); } catch (e) {}
+  docEl.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
   toggle.addEventListener("click", function () {
     var next = effective() === "dark" ? "light" : "dark";
     docEl.setAttribute("data-theme", next);
