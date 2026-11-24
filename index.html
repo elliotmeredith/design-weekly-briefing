@@ -79,6 +79,7 @@ section.desk > header span { color: var(--muted); font-size: 0.8rem; font-varian
 .stories.single { grid-template-columns: minmax(0, 1fr); max-width: 680px; }
 @media (max-width: 760px) { .stories { grid-template-columns: minmax(0, 1fr); } }
 .story { padding-block: 18px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; align-content: start; min-width: 0; }
+.story .kick { color: var(--muted); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
 .story h3 { font-family: var(--serif); font-weight: 600; font-size: 1.32rem; line-height: 1.22; margin: 0; text-wrap: balance; }
 .story p { margin: 0; font-family: var(--serif); font-size: 1.04rem; line-height: 1.55; }
 .story .why { font-family: var(--sans); font-size: 0.9rem; line-height: 1.5; background: var(--tint); padding: 10px 12px; }
@@ -284,6 +285,63 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
             }
           }
         ]
+      },
+      {
+        "key": "ukbanking",
+        "title": "UK banking digital CX",
+        "note": "A quiet week for UK consumer banking CX news. Two items fell in 16–24 Nov; the rest are bigger moves from earlier in November, marked with their dates.",
+        "items": [
+          {
+            "kicker": "18 Nov · NatWest · Traditional",
+            "lead": "NatWest approved to offer Targeted Support",
+            "body": "NatWest got regulatory approval to offer Targeted Support, helping eligible NatWest and RBS customers make saving and investing decisions. A phased rollout is planned in the coming months; channels are not named yet.",
+            "why": "Targeted Support sits between generic guidance and full advice, so these journeys need careful framing of what the bank is and is not recommending, plus clear next steps.",
+            "source": {
+              "name": "NatWest Group",
+              "url": "https://www.natwestgroup.com/news-and-insights/news-room/press-releases/2026/natwest-receives-regulatory-authorisation-to-offer-targeted-supp.html"
+            }
+          },
+          {
+            "kicker": "16 Nov · Starling · Neo",
+            "lead": "Starling's CEO to step down",
+            "body": "Group CEO Raman Bhatia will step down at the end of 2026, with no successor named yet. Starling says retail and SME account openings doubled year on year in Q3.",
+            "why": "Bhatia led Starling's AI-first push. Watch whether the next CEO keeps the pace of weekly smart tools and agentic assistants that is setting the neobank bar.",
+            "source": {
+              "name": "Starling",
+              "url": "https://www.starlingbank.com/news/starling-group-ceo-raman-bhatia-to-step-down"
+            }
+          },
+          {
+            "kicker": "Earlier · 13 Nov · Starling · Neo",
+            "lead": "Starling launches talk to transact",
+            "body": "Customers type or say a request like Send Mum £20, the in-app assistant prepares the payment, and they approve it with a tap. It rolls out to all personal and joint accounts by the end of 2026, with invoice-photo payments for business customers next.",
+            "why": "A live UK example of conversational payments, where the confirmation screen does the safety work. It is a useful benchmark for any AI payment assistant idea.",
+            "source": {
+              "name": "Starling",
+              "url": "https://www.starlingbank.com/news/-talk-to-transact-starling-customers-can-use-their-voice-to-send-money"
+            }
+          },
+          {
+            "kicker": "Earlier · 12 Nov · Monzo · Neo",
+            "lead": "Monzo drops the default £200 contactless limit",
+            "body": "Monzo became the first UK bank to remove the default cumulative contactless limit, using risk-based checks instead. In a two-month test, PIN prompts fell 54%, unauthorised contactless fraud by value fell 30% and successful payments rose 4%.",
+            "why": "Friction targeted by risk beat a blanket rule on both safety and experience, which is a strong argument to bring to risk partners.",
+            "source": {
+              "name": "Monzo",
+              "url": "https://monzo.com/blog/removing-default-cumulative-contactless-limit"
+            }
+          },
+          {
+            "kicker": "Earlier · 9 Nov · Lloyds · Traditional",
+            "lead": "Lloyds app and online banking outage",
+            "body": "The Lloyds app and online banking went down from about 9:20am, with more than 4,200 Downdetector reports. Halifax and Bank of Scotland users were also affected.",
+            "why": "Outages are when trust is won or lost. Clear in-app status messages and fallback routes are part of the design, not just an IT concern.",
+            "source": {
+              "name": "Ad-hoc News",
+              "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/lloyds-banking-group-stock-in-focus-after-lloyds-app-outage/70482261"
+            }
+          }
+        ]
       }
     ],
     "worth": [
@@ -375,6 +433,31 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
         "title": "UX Content Collective: The future of content design, revisited",
         "url": "https://uxcontent.com/the-future-of-content-design-revisited/",
         "date": "19 Nov"
+      },
+      {
+        "title": "NatWest Group: NatWest receives regulatory authorisation to offer Targeted Support",
+        "url": "https://www.natwestgroup.com/news-and-insights/news-room/press-releases/2026/natwest-receives-regulatory-authorisation-to-offer-targeted-supp.html",
+        "date": "18 Nov"
+      },
+      {
+        "title": "Starling: Group CEO Raman Bhatia to step down",
+        "url": "https://www.starlingbank.com/news/starling-group-ceo-raman-bhatia-to-step-down",
+        "date": "16 Nov"
+      },
+      {
+        "title": "Starling: Talk to transact voice payments",
+        "url": "https://www.starlingbank.com/news/-talk-to-transact-starling-customers-can-use-their-voice-to-send-money",
+        "date": "13 Nov"
+      },
+      {
+        "title": "Monzo: Making contactless payments smoother and safer",
+        "url": "https://monzo.com/blog/removing-default-cumulative-contactless-limit",
+        "date": "12 Nov"
+      },
+      {
+        "title": "Ad-hoc News: Lloyds Banking Group stock in focus after Lloyds app outage",
+        "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/lloyds-banking-group-stock-in-focus-after-lloyds-app-outage/70482261",
+        "date": "9 Nov"
       }
     ]
   }
@@ -452,6 +535,7 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
       var ul = el("ul", { class: "stories" + (items.length === 1 ? " single" : "") });
       items.forEach(function (it) {
         ul.appendChild(el("li", { class: "story" }, [
+          it.kicker ? el("span", { class: "kick", text: it.kicker }) : null,
           el("h3", { text: it.lead }),
           el("p", { text: it.body }),
           it.why ? el("div", { class: "why" }, [el("b", { text: "Why it matters: " }), it.why]) : null,
