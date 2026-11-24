@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Design Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: newspaper front page. Centred masthead over heavy rules, a lead story, then each desk as a two-column grid of stories divided by hairlines. Monotone throughout. */
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #5c5c5c;
+  --line: #d6d6d6;
+  --rule: #111111;
+  --tint: #f3f3f3;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121212; --fg: #ececec; --muted: #a0a0a0; --line: #343434; --rule: #ececec; --tint: #1c1c1c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121212; --fg: #ececec; --muted: #a0a0a0; --line: #343434; --rule: #ececec; --tint: #1c1c1c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 72px;
+}
+a { color: inherit; text-decoration-color: var(--line); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: currentColor; }
+a:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+.label { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Masthead */
+.strap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; padding-block: 14px 10px; color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.strap-right { display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 8px; font: 600 0.72rem/1 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.theme-toggle:hover { border-color: var(--fg); }
+.theme-toggle:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.tt-icon { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--fg); background: linear-gradient(90deg, var(--fg) 50%, transparent 50%); }
+.masthead { text-align: center; padding-block: 10px 14px; border-top: 1px solid var(--line); }
+.masthead .name { font-family: var(--serif); font-weight: 700; font-size: clamp(2.2rem, 7vw, 4rem); line-height: 1; letter-spacing: -0.02em; margin: 10px 0 0; }
+.masthead .sub { font-family: var(--serif); font-style: italic; color: var(--muted); margin-top: 6px; font-size: 1rem; }
+.rules { border-top: 3px solid var(--rule); border-bottom: 1px solid var(--rule); height: 6px; }
+nav.desks { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 28px; padding-block: 10px; border-bottom: 1px solid var(--line); }
+nav.desks a { text-decoration: none; }
+nav.desks a:hover { text-decoration: underline; }
+
+/* Lead */
+.lead { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 32px; padding-block: 32px 8px; }
+.lead h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.15rem); line-height: 1.18; letter-spacing: -0.01em; margin: 8px 0 0; text-wrap: balance; }
+.lead .kicker { color: var(--muted); }
+.lead aside { border-left: 1px solid var(--line); padding-left: 24px; display: grid; align-content: start; gap: 10px; }
+.lead aside p { margin: 0; font-family: var(--serif); font-size: 1.02rem; line-height: 1.5; }
+.lead aside .meta { color: var(--muted); font-size: 0.82rem; font-family: var(--sans); }
+@media (max-width: 760px) {
+  .lead { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .lead aside { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 16px; }
+}
+
+/* Desks */
+section.desk { padding-top: 28px; }
+section.desk > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-top: 2px solid var(--rule); padding-top: 8px; margin-bottom: 4px; }
+section.desk > header h2 { margin: 0; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+section.desk > header span { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.quiet { margin: 8px 0 0; font-family: var(--serif); font-style: italic; color: var(--muted); }
+.stories { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+.stories.single { grid-template-columns: minmax(0, 1fr); max-width: 680px; }
+@media (max-width: 760px) { .stories { grid-template-columns: minmax(0, 1fr); } }
+.story { padding-block: 18px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; align-content: start; min-width: 0; }
+.story h3 { font-family: var(--serif); font-weight: 600; font-size: 1.32rem; line-height: 1.22; margin: 0; text-wrap: balance; }
+.story p { margin: 0; font-family: var(--serif); font-size: 1.04rem; line-height: 1.55; }
+.story .why { font-family: var(--sans); font-size: 0.9rem; line-height: 1.5; background: var(--tint); padding: 10px 12px; }
+.story .why b { font-weight: 600; }
+.story .src { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); }
+
+/* Back pages */
+.back { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; margin-top: 40px; }
+@media (max-width: 760px) { .back { grid-template-columns: minmax(0, 1fr); } }
+.back section { border-top: 2px solid var(--rule); padding-top: 8px; }
+.back h2 { margin: 0 0 12px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.reads { list-style: none; margin: 0; padding: 0; display: grid; }
+.reads li { padding-block: 10px; border-bottom: 1px solid var(--line); }
+.reads a { font-family: var(--serif); font-weight: 600; font-size: 1.08rem; text-decoration: none; }
+.reads a:hover { text-decoration: underline; }
+.reads .by { color: var(--muted); font-size: 0.8rem; margin-left: 6px; }
+.reads p { margin: 4px 0 0; font-size: 0.9rem; color: var(--muted); }
+.try h3 { font-family: var(--serif); font-weight: 600; font-size: 1.32rem; line-height: 1.22; margin: 0 0 8px; text-wrap: balance; }
+.try p { margin: 0; font-family: var(--serif); font-size: 1.04rem; }
+
+details.sources { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 12px; }
+details.sources summary { cursor: pointer; }
+details.sources ol { margin: 12px 0 0; padding-left: 22px; display: grid; gap: 4px; font-size: 0.88rem; }
+details.sources .d { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.archive { margin-top: 40px; border-top: 2px solid var(--rule); padding-top: 8px; }
+.archive h2 { margin: 0 0 8px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.archive ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 24px; }
+.archive a { font-family: var(--serif); font-size: 1.02rem; font-variant-numeric: tabular-nums; }
+.archive a[aria-current="true"] { font-weight: 700; text-decoration: none; }
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="strap"><span id="strap-date"></span><span class="strap-right"><span>UX · UI · Product · Content</span><button type="button" id="theme-toggle" class="theme-toggle" aria-pressed="false"><span class="tt-icon" aria-hidden="true"></span><span id="theme-label">Dark mode</span></button></span></div>
+  <header class="masthead">
+    <div class="name">Weekly Design Briefing</div>
+    <div class="sub">The week's design news, every Monday</div>
+  </header>
+  <div class="rules" aria-hidden="true"></div>
+  <nav class="desks label" id="desks" aria-label="Sections"></nav>
+  <main id="issue" aria-live="polite"></main>
+  <section class="archive label-wrap" id="past" aria-label="Past issues">
+    <h2>Past issues</h2>
+    <ol id="archive"></ol>
+  </section>
+  <footer>Compiled each Monday from pages published in the previous seven days. Summaries are paraphrased; follow the links for the originals.</footer>
+</div>
+
+<!-- ISSUES: newest first. Each weekly run adds one object to the start of this array. -->
+<script type="application/json" id="issues-data">
+[
+  {
+    "id": "2026-11-23",
+    "weekOf": "23 Nov 2026",
+    "range": "16–23 Nov 2026",
+    "headline": "AI is now fast at making design work, so the value is shifting to the human inputs and checks around it. NN/g showed AI designs better from synthesised research than from raw data, and Smashing argued that accessibility testing is now the bottleneck in AI-sped teams.",
+    "sections": [
+      {
+        "key": "ux",
+        "title": "UX",
+        "note": "",
+        "items": [
+          {
+            "lead": "AI designs better from synthesised research than raw data",
+            "body": "NN/g gave an AI model the same design tasks with either around 100 raw user comments or synthesised findings and recommendations. Designs from synthesised input met 77.9% of criteria against 69.5% for raw comments, and only they covered edge cases like loyalty-mile impact.",
+            "why": "If your team feeds research into AI tools, the synthesis step is now the highest-leverage part of the job, not optional polish.",
+            "source": {
+              "name": "NN/g",
+              "url": "https://www.nngroup.com/articles/raw-data-vs-synthesized-data/"
+            }
+          },
+          {
+            "lead": "Accessibility testing is the bottleneck in AI-sped workflows",
+            "body": "Level Access's CPO argues that AI has sped up design and build far more than QA. Only about 30% of professionals surveyed said AI sped up testing, and WebAIM found 10.1% more errors per page year on year. The fix is a find, fix and prove routine: accessibility specs at handoff, automated checks on every pull request, and recorded evidence.",
+            "why": "Annotating focus order, names and states in your handoff and design system is where designers prevent the most defects.",
+            "source": {
+              "name": "Smashing Magazine",
+              "url": "https://www.smashingmagazine.com/2026/11/ai-sped-up-build-how-can-accessibility-testing-keep-up/"
+            }
+          },
+          {
+            "lead": "Baymard: polished surfaces, weak logic",
+            "body": "A new Health & Beauty benchmark of 10 sites, including Sephora, Ulta and CVS, found none delivered a good overall experience. Discovery and visuals scored well, but search (misspellings, no-results pages), filtering and checkout trust signals lagged.",
+            "why": "Error recovery, order summaries and timelines are where trust is won or lost, and that applies to any transactional journey.",
+            "source": {
+              "name": "Baymard",
+              "url": "https://baymard.com/research-articles/health-and-beauty-ux-benchmark-2026"
+            }
+          },
+          {
+            "lead": "NN/g refreshes its qualitative methods overview",
+            "body": "A new 13-minute guide walks through four popular qualitative research methods and when to use each.",
+            "why": "A handy primer to share with POs or junior designers when deciding how to learn why users struggle.",
+            "source": {
+              "name": "NN/g",
+              "url": "https://www.nngroup.com/articles/qual-research-methods/"
+            }
+          }
+        ]
+      },
+      {
+        "key": "ui",
+        "title": "UI",
+        "note": "",
+        "items": [
+          {
+            "lead": "Figma's agent reaches Dev Mode, plus multi-option image generation",
+            "body": "Figma shipped a run of updates between 17 and 20 Nov. The agent now works in Dev Mode, where it inspects designs, compares versions and hands over code snippets. Image tools can return two, four or six options from one prompt, admins can allowlist approved MCP clients, and FigJam on mobile gets better navigation.",
+            "why": "The MCP allowlist is the control a bank's security team will want before letting designers connect AI tools to Figma, so it is worth flagging to your design ops lead.",
+            "source": {
+              "name": "Releasebot (Figma release notes)",
+              "url": "https://releasebot.io/updates/figma"
+            }
+          },
+          {
+            "lead": "Apple tests a softer Liquid Glass navigation bar",
+            "body": "iOS 27.3 beta 2 hides a flagged option that fades scrolling content under the top bar with a gentler blur instead of a hard edge. It is off by default and not user-facing yet.",
+            "why": "Apple is still tuning legibility under translucent chrome, so check your iOS app's top bars against busy content such as transaction lists.",
+            "source": {
+              "name": "MacRumors",
+              "url": "https://macrumors.com/2026/11/17/apple-tests-softer-side-of-liquid-glass"
+            }
+          },
+          {
+            "lead": "Gemini swaps a full-screen camera for a draggable bottom sheet",
+            "body": "Google's Gemini app on Android now opens its camera inline as a bottom sheet that can be dragged up, rather than jumping to a generic full-screen viewfinder. Flash and camera-flip controls sit behind an overflow button.",
+            "why": "A good pattern reference for any capture step (cheque, ID or receipt scanning) where users should keep their context.",
+            "source": {
+              "name": "9to5Google",
+              "url": "https://9to5google.com/2026/11/21/gemini-camera-redesign/"
+            }
+          },
+          {
+            "lead": "From prototype to pull request",
+            "body": "A Salesforce design lead sets out what it takes for designer-built code prototypes to reach production: give AI tools real components and tokens, test edge cases and keyboard access, and agree who reviews and owns designer pull requests.",
+            "why": "A practical checklist if your team is experimenting with Figma Make or coding agents and wants those prototypes to count.",
+            "source": {
+              "name": "UX Magazine",
+              "url": "https://uxmag.com/articles/from-prototype-to-pull-request"
+            }
+          }
+        ]
+      },
+      {
+        "key": "product",
+        "title": "Product",
+        "note": "",
+        "items": [
+          {
+            "lead": "McDonald's VP of Product challenges product's sacred cows",
+            "body": "In a keynote write-up, Emily Andrews argues that product owning prioritisation, being the sole voice of the customer and relying on decision rights (RACI) can make teams territorial. She suggests PMs act as decision architects who set up good decisions and earn influence through trust.",
+            "why": "It gives designers a framing to get a seat in prioritisation, by bringing evidence to a shared decision rather than waiting for a PO's call.",
+            "source": {
+              "name": "Mind the Product",
+              "url": "https://www.mindtheproduct.com/the-three-sacred-cows-of-product-management/"
+            }
+          },
+          {
+            "lead": "A fintech framework for where AI belongs",
+            "body": "FreeAgent's Head of Product Ops shares a Four Levels of AI Autonomy model. It plots each user job by AI autonomy (from human-approves-everything to fully autonomous) against cost of error, including regulatory cost. High-risk jobs stay at low autonomy, and rule-based automation is often the better answer.",
+            "why": "A ready-made workshop canvas for regulated products, where cost of error is the deciding factor.",
+            "source": {
+              "name": "Mind the Product",
+              "url": "https://www.mindtheproduct.com/using-the-four-levels-of-ai-autonomy-to-decide-where-ai-fits-into-your-product/"
+            }
+          },
+          {
+            "lead": "OpenAI opens ChatGPT to business profiles and branded agents",
+            "body": "Businesses in ChatGPT lets companies claim a profile, submit product feeds and see discovery insights. Branded agents are limited to eligible US businesses for now. The article urges teams to treat the agent as a customer-facing product with defined promises and hand-offs.",
+            "why": "More customers will meet your product inside someone else's AI first, so the accuracy of that description becomes part of the experience.",
+            "source": {
+              "name": "Mind the Product",
+              "url": "https://www.mindtheproduct.com/open-ai-wants-your-product-inside-chat-gpt-heres-how-it-works/"
+            }
+          },
+          {
+            "lead": "Canva adds an AI off switch",
+            "body": "Canva Free and Pro users can now hide generative AI features with one toggle, and a second toggle reduces AI-generated content in search and recommendations. Fast Company notes the controls are buried in settings menus.",
+            "why": "User control over AI is becoming a product feature in its own right, and where you put that control signals how sincere it is.",
+            "source": {
+              "name": "Fast Company",
+              "url": "https://www.fastcompany.com/91645826/canva-added-an-ai-kill-switch-to-its-tools"
+            }
+          }
+        ]
+      },
+      {
+        "key": "content",
+        "title": "Content",
+        "note": "A quiet week for content design: one strong practitioner piece, and no major guidance or tooling news.",
+        "items": [
+          {
+            "lead": "The future of content design, revisited",
+            "body": "UX Content Collective's Patrick Stafford rechecks his 2024 predictions. Content work has moved to governing copy at scale through AI rules and skills, non-writers now produce much product copy, evaluation has become a core skill, and taste now has to be written down as explicit rules. He was wrong that content designers would become general UX leaders, or that roles would specialise.",
+            "why": "If engineers and POs are writing copy with AI, a content standard written as rules an AI can apply will protect quality better than reviewing every string.",
+            "source": {
+              "name": "UX Content Collective",
+              "url": "https://uxcontent.com/the-future-of-content-design-revisited/"
+            }
+          }
+        ]
+      }
+    ],
+    "worth": [
+      {
+        "title": "Can AI generate good designs from raw user data?",
+        "source": "NN/g",
+        "url": "https://www.nngroup.com/articles/raw-data-vs-synthesized-data/",
+        "why": "A rare controlled study with real numbers, and useful evidence when arguing for research synthesis time."
+      },
+      {
+        "title": "The three sacred cows of product leadership",
+        "source": "Mind the Product",
+        "url": "https://www.mindtheproduct.com/the-three-sacred-cows-of-product-management/",
+        "why": "A product VP arguing that product should not own prioritisation alone: handy framing for getting design into those decisions."
+      },
+      {
+        "title": "Using the Four Levels of AI autonomy",
+        "source": "Mind the Product",
+        "url": "https://www.mindtheproduct.com/using-the-four-levels-of-ai-autonomy-to-decide-where-ai-fits-into-your-product/",
+        "why": "Written by a UK fintech product lead, and it maps straight onto regulated banking journeys."
+      }
+    ],
+    "tryThis": {
+      "lead": "Run a 30-minute autonomy × cost-of-error session on one journey",
+      "body": "Take a journey you're working on and list the user jobs in it. Plot each job on FreeAgent's Four Levels of AI autonomy against cost of error (to the customer, the bank and regulators), then bring the plot to your PO as a shared prioritisation input. Whatever you feed into AI tools afterwards, share synthesised findings rather than raw notes."
+    },
+    "sources": [
+      {
+        "title": "NN/g: Can AI generate good designs from raw user data?",
+        "url": "https://www.nngroup.com/articles/raw-data-vs-synthesized-data/",
+        "date": "20 Nov"
+      },
+      {
+        "title": "NN/g: Qualitative user-research methods, an overview",
+        "url": "https://www.nngroup.com/articles/qual-research-methods/",
+        "date": "20 Nov"
+      },
+      {
+        "title": "Smashing Magazine: AI sped up the build, how can accessibility testing keep up?",
+        "url": "https://www.smashingmagazine.com/2026/11/ai-sped-up-build-how-can-accessibility-testing-keep-up/",
+        "date": "17 Nov"
+      },
+      {
+        "title": "Baymard: Health & Beauty UX benchmark",
+        "url": "https://baymard.com/research-articles/health-and-beauty-ux-benchmark-2026",
+        "date": "17 Nov"
+      },
+      {
+        "title": "Releasebot: Figma release notes feed",
+        "url": "https://releasebot.io/updates/figma",
+        "date": "17–20 Nov"
+      },
+      {
+        "title": "MacRumors: Apple tests a softer side of Liquid Glass",
+        "url": "https://macrumors.com/2026/11/17/apple-tests-softer-side-of-liquid-glass",
+        "date": "17 Nov"
+      },
+      {
+        "title": "9to5Google: Gemini camera redesign",
+        "url": "https://9to5google.com/2026/11/21/gemini-camera-redesign/",
+        "date": "21 Nov"
+      },
+      {
+        "title": "UX Magazine: From prototype to pull request",
+        "url": "https://uxmag.com/articles/from-prototype-to-pull-request",
+        "date": "18 Nov"
+      },
+      {
+        "title": "Mind the Product: The three sacred cows of product leadership",
+        "url": "https://www.mindtheproduct.com/the-three-sacred-cows-of-product-management/",
+        "date": "20 Nov"
+      },
+      {
+        "title": "Mind the Product: Using the Four Levels of AI autonomy",
+        "url": "https://www.mindtheproduct.com/using-the-four-levels-of-ai-autonomy-to-decide-where-ai-fits-into-your-product/",
+        "date": "17 Nov"
+      },
+      {
+        "title": "Mind the Product: OpenAI launches Businesses in ChatGPT",
+        "url": "https://www.mindtheproduct.com/open-ai-wants-your-product-inside-chat-gpt-heres-how-it-works/",
+        "date": "16 Nov"
+      },
+      {
+        "title": "Fast Company: Canva added an AI kill switch to its tools",
+        "url": "https://www.fastcompany.com/91645826/canva-added-an-ai-kill-switch-to-its-tools",
+        "date": "21 Nov"
+      },
+      {
+        "title": "UX Content Collective: The future of content design, revisited",
+        "url": "https://uxcontent.com/the-future-of-content-design-revisited/",
+        "date": "19 Nov"
+      }
+    ]
+  }
+]
+</script>
+
+<script>
+(function () {
+  var issues = [];
+  try { issues = JSON.parse(document.getElementById("issues-data").textContent); } catch (e) { issues = []; }
+  var archive = document.getElementById("archive");
+  var root = document.getElementById("issue");
+  var desks = document.getElementById("desks");
+  var strap = document.getElementById("strap-date");
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function safeUrl(u) { return typeof u === "string" && u.indexOf("https://") === 0 ? u : null; }
+  function link(text, url, cls) {
+    var u = safeUrl(url);
+    if (!u) return el("span", { text: text });
+    var a = el("a", { href: u, target: "_blank", rel: "noopener", text: text });
+    if (cls) a.setAttribute("class", cls);
+    return a;
+  }
+  function slug(id) { return "w-" + String(id).replace(/[^0-9a-z-]/gi, ""); }
+  function jump(label, target) {
+    return el("a", { href: location.hash || "#", "data-target": target, text: label });
+  }
+
+  function renderArchive(current) {
+    archive.textContent = "";
+    issues.forEach(function (iss) {
+      var a = el("a", { href: "#" + slug(iss.id), text: "Week of " + iss.weekOf });
+      if (iss === current) a.setAttribute("aria-current", "true");
+      archive.appendChild(el("li", null, [a]));
+    });
+  }
+
+  function renderIssue(iss) {
+    root.textContent = ""; desks.textContent = "";
+    if (!iss) {
+      strap.textContent = "";
+      root.appendChild(el("p", { class: "quiet", text: "The first issue will appear here after the next weekly run." }));
+      return;
+    }
+    strap.textContent = "Week of " + iss.weekOf + " · covers " + iss.range;
+    var sections = iss.sections || [];
+    sections.forEach(function (s) { desks.appendChild(jump(s.title, "desk-" + s.key)); });
+    if (iss.worth && iss.worth.length) desks.appendChild(jump("Worth your time", "back"));
+    desks.appendChild(jump("Past issues", "past"));
+
+    var first = null;
+    sections.some(function (s) { if (s.items && s.items.length) { first = { s: s, it: s.items[0] }; return true; } return false; });
+    root.appendChild(el("section", { class: "lead" }, [
+      el("div", null, [el("span", { class: "label kicker", text: "This week in one line" }), el("h1", { text: iss.headline || "" })]),
+      first ? el("aside", null, [
+        el("span", { class: "label", text: "Top story · " + first.s.title }),
+        el("p", null, [el("b", { text: first.it.lead + ". " }), first.it.why || ""]),
+        first.it.source ? el("span", { class: "meta" }, [link(first.it.source.name, first.it.source.url)]) : null
+      ]) : null
+    ]));
+
+    sections.forEach(function (s) {
+      var items = s.items || [];
+      var sec = el("section", { class: "desk", id: "desk-" + s.key });
+      sec.appendChild(el("header", null, [el("h2", { text: s.title }), el("span", { text: items.length + (items.length === 1 ? " story" : " stories") })]));
+      if (s.note) sec.appendChild(el("p", { class: "quiet", text: s.note }));
+      var ul = el("ul", { class: "stories" + (items.length === 1 ? " single" : "") });
+      items.forEach(function (it) {
+        ul.appendChild(el("li", { class: "story" }, [
+          el("h3", { text: it.lead }),
+          el("p", { text: it.body }),
+          it.why ? el("div", { class: "why" }, [el("b", { text: "Why it matters: " }), it.why]) : null,
+          it.source ? el("span", { class: "src" }, [link(it.source.name, it.source.url)]) : null
+        ]));
+      });
+      sec.appendChild(ul);
+      root.appendChild(sec);
+    });
+
+    var back = el("div", { class: "back", id: "back" });
+    if (iss.worth && iss.worth.length) {
+      var ul2 = el("ul", { class: "reads" });
+      iss.worth.forEach(function (w) {
+        ul2.appendChild(el("li", null, [link(w.title, w.url), w.source ? el("span", { class: "by", text: w.source }) : null, el("p", { text: w.why })]));
+      });
+      back.appendChild(el("section", null, [el("h2", { text: "Worth your time" }), ul2]));
+    }
+    if (iss.tryThis) {
+      back.appendChild(el("section", { class: "try" }, [el("h2", { text: "Try this week" }), el("h3", { text: iss.tryThis.lead }), el("p", { text: iss.tryThis.body })]));
+    }
+    root.appendChild(back);
+
+    if (iss.sources && iss.sources.length) {
+      var ol = el("ol");
+      iss.sources.forEach(function (s) { ol.appendChild(el("li", null, [link(s.title, s.url), el("span", { class: "d", text: s.date ? " · " + s.date : "" })])); });
+      root.appendChild(el("details", { class: "sources" }, [el("summary", { class: "label", text: "Sources (" + iss.sources.length + ")" }), ol]));
+    }
+  }
+
+  function current() {
+    var h = (location.hash || "").slice(1);
+    for (var i = 0; i < issues.length; i++) if (slug(issues[i].id) === h) return issues[i];
+    return issues[0];
+  }
+  function show() { var iss = current(); renderArchive(iss); renderIssue(iss); }
+
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[data-target]");
+    if (!a) return;
+    e.preventDefault();
+    var t = document.getElementById(a.getAttribute("data-target"));
+    if (t) t.scrollIntoView();
+  });
+  var docEl = document.documentElement;
+  var toggle = document.getElementById("theme-toggle");
+  var themeLabel = document.getElementById("theme-label");
+  var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  function effective() {
+    var t = docEl.getAttribute("data-theme");
+    if (t === "dark" || t === "light") return t;
+    return mq && mq.matches ? "dark" : "light";
+  }
+  function syncToggle() {
+    var dark = effective() === "dark";
+    themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+    toggle.setAttribute("aria-pressed", dark ? "true" : "false");
+    toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  }
+  try { var saved = localStorage.getItem("briefing-theme"); if (saved === "dark" || saved === "light") docEl.setAttribute("data-theme", saved); } catch (e) {}
+  toggle.addEventListener("click", function () {
+    var next = effective() === "dark" ? "light" : "dark";
+    docEl.setAttribute("data-theme", next);
+    try { localStorage.setItem("briefing-theme", next); } catch (e) {}
+    syncToggle();
+  });
+  if (mq && mq.addEventListener) mq.addEventListener("change", syncToggle);
+  syncToggle();
+
+  window.addEventListener("hashchange", function () { show(); window.scrollTo(0, 0); });
+  show();
+})();
+</script>
+</body>
+</html>
