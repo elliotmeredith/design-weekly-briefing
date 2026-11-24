@@ -71,9 +71,18 @@ nav.desks a:hover { text-decoration: underline; }
 
 /* Desks */
 section.desk { padding-top: 28px; }
-section.desk > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-top: 2px solid var(--rule); padding-top: 8px; margin-bottom: 4px; }
-section.desk > header h2 { margin: 0; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
-section.desk > header span { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+section.desk > h2 { margin: 0 0 4px; border-top: 2px solid var(--rule); }
+.desk-toggle { display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0 4px; margin: 0; background: none; border: 0; color: var(--fg); font: 600 0.8rem/1.4 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; text-align: left; cursor: pointer; }
+.desk-toggle:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.desk-toggle .t { display: inline-flex; align-items: center; gap: 10px; }
+.desk-toggle .chev { width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); flex: none; }
+.desk-toggle[aria-expanded="false"] .chev { transform: rotate(-45deg); }
+.desk-toggle .n { color: var(--muted); font-weight: 400; letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; }
+.desk-toggle:hover .t span:last-child { text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: no-preference) { .desk-toggle .chev { transition: transform 0.15s ease; } }
+nav.desks button.all { background: none; border: 0; padding: 0; color: var(--muted); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+nav.desks button.all:hover { color: var(--fg); text-decoration: underline; }
+nav.desks button.all:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 .quiet { margin: 8px 0 0; font-family: var(--serif); font-style: italic; color: var(--muted); }
 .stories { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
 .stories.single { grid-template-columns: minmax(0, 1fr); max-width: 680px; }
@@ -515,6 +524,8 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     sections.forEach(function (s) { desks.appendChild(jump(s.title, "desk-" + s.key)); });
     if (iss.worth && iss.worth.length) desks.appendChild(jump("Worth your time", "back"));
     desks.appendChild(jump("Past issues", "past"));
+    var allBtn = el("button", { type: "button", class: "all", id: "toggle-all" });
+    desks.appendChild(allBtn);
 
     var first = null;
     sections.some(function (s) { if (s.items && s.items.length) { first = { s: s, it: s.items[0] }; return true; } return false; });
@@ -529,9 +540,16 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
 
     sections.forEach(function (s) {
       var items = s.items || [];
-      var sec = el("section", { class: "desk", id: "desk-" + s.key });
-      sec.appendChild(el("header", null, [el("h2", { text: s.title }), el("span", { text: items.length + (items.length === 1 ? " story" : " stories") })]));
-      if (s.note) sec.appendChild(el("p", { class: "quiet", text: s.note }));
+      var sec = el("section", { class: "desk", id: "desk-" + s.key, "data-key": s.key });
+      var bodyId = "deskbody-" + s.key;
+      var btn = el("button", { type: "button", class: "desk-toggle", "aria-expanded": "true", "aria-controls": bodyId }, [
+        el("span", { class: "t" }, [el("span", { class: "chev", "aria-hidden": "true" }), el("span", { text: s.title })]),
+        el("span", { class: "n", text: items.length + (items.length === 1 ? " story" : " stories") })
+      ]);
+      sec.appendChild(el("h2", null, [btn]));
+      var deskBody = el("div", { id: bodyId });
+      sec.appendChild(deskBody);
+      if (s.note) deskBody.appendChild(el("p", { class: "quiet", text: s.note }));
       var ul = el("ul", { class: "stories" + (items.length === 1 ? " single" : "") });
       items.forEach(function (it) {
         ul.appendChild(el("li", { class: "story" }, [
@@ -542,9 +560,11 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
           it.source ? el("span", { class: "src" }, [link(it.source.name, it.source.url)]) : null
         ]));
       });
-      sec.appendChild(ul);
+      deskBody.appendChild(ul);
       root.appendChild(sec);
+      setOpen(sec, collapsed.indexOf(s.key) === -1, false);
     });
+    syncAll();
 
     var back = el("div", { class: "back", id: "back" });
     if (iss.worth && iss.worth.length) {
@@ -566,6 +586,29 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     }
   }
 
+  var collapsed = [];
+  try { var c = JSON.parse(localStorage.getItem("briefing-collapsed") || "[]"); if (Array.isArray(c)) collapsed = c.filter(function (x) { return typeof x === "string"; }); } catch (e) {}
+  function saveCollapsed() { try { localStorage.setItem("briefing-collapsed", JSON.stringify(collapsed)); } catch (e) {} }
+  function isOpen(sec) { var b = sec.querySelector(".desk-toggle"); return !b || b.getAttribute("aria-expanded") === "true"; }
+  function setOpen(sec, open, remember) {
+    var b = sec.querySelector(".desk-toggle");
+    var body = document.getElementById(b.getAttribute("aria-controls"));
+    b.setAttribute("aria-expanded", open ? "true" : "false");
+    if (body) body.hidden = !open;
+    if (remember) {
+      var k = sec.getAttribute("data-key"), i = collapsed.indexOf(k);
+      if (open && i !== -1) collapsed.splice(i, 1);
+      if (!open && i === -1) collapsed.push(k);
+      saveCollapsed();
+    }
+  }
+  function syncAll() {
+    var b = document.getElementById("toggle-all");
+    if (!b) return;
+    var anyOpen = Array.prototype.some.call(document.querySelectorAll("section.desk"), function (d) { return isOpen(d); });
+    b.textContent = anyOpen ? "Collapse all" : "Expand all";
+  }
+
   function current() {
     var h = (location.hash || "").slice(1);
     for (var i = 0; i < issues.length; i++) if (slug(issues[i].id) === h) return issues[i];
@@ -574,10 +617,25 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
   function show() { var iss = current(); renderArchive(iss); renderIssue(iss); }
 
   document.addEventListener("click", function (e) {
+    var tog = e.target.closest && e.target.closest(".desk-toggle");
+    if (tog) {
+      var sec = tog.closest("section.desk");
+      setOpen(sec, tog.getAttribute("aria-expanded") !== "true", true);
+      syncAll();
+      return;
+    }
+    if (e.target.closest && e.target.closest("#toggle-all")) {
+      var desksEls = document.querySelectorAll("section.desk");
+      var anyOpen = Array.prototype.some.call(desksEls, function (d) { return isOpen(d); });
+      Array.prototype.forEach.call(desksEls, function (d) { setOpen(d, !anyOpen, true); });
+      syncAll();
+      return;
+    }
     var a = e.target.closest && e.target.closest("a[data-target]");
     if (!a) return;
     e.preventDefault();
     var t = document.getElementById(a.getAttribute("data-target"));
+    if (t && t.classList.contains("desk") && !isOpen(t)) { setOpen(t, true, true); syncAll(); }
     if (t) t.scrollIntoView();
   });
   var docEl = document.documentElement;
