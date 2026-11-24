@@ -127,7 +127,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     <div class="sub">The week's design news, every Monday</div>
   </header>
   <div class="rules" aria-hidden="true"></div>
-  <nav class="desks label" id="desks" aria-label="Sections"></nav>
   <main id="issue" aria-live="polite"></main>
   <section class="archive label-wrap" id="past" aria-label="Past issues">
     <h2>Past issues</h2>
@@ -474,7 +473,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
   try { issues = JSON.parse(document.getElementById("issues-data").textContent); } catch (e) { issues = []; }
   var archive = document.getElementById("archive");
   var root = document.getElementById("issue");
-  var desks = document.getElementById("desks");
   var strap = document.getElementById("strap-date");
 
   function el(tag, attrs, kids) {
@@ -508,7 +506,7 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
   }
 
   function renderIssue(iss) {
-    root.textContent = ""; desks.textContent = "";
+    root.textContent = "";
     if (!iss) {
       strap.textContent = "";
       root.appendChild(el("p", { class: "quiet", text: "The first issue will appear here after the next weekly run." }));
@@ -516,8 +514,6 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
     }
     strap.textContent = "Week of " + iss.weekOf + " · covers " + iss.range;
     var sections = iss.sections || [];
-    sections.forEach(function (s) { desks.appendChild(jump(s.title, "desk-" + s.key)); });
-    desks.appendChild(jump("Past issues", "past"));
 
     root.appendChild(el("h1", { class: "sr-only", text: "Week of " + iss.weekOf }));
 
